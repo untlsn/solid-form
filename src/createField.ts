@@ -14,7 +14,7 @@ import { createEffect } from 'solid-js';
 export type LiteField<V extends object = object, K extends FoldValuePaths<V> = any> = DefinedLiteField<PathValue<V, K>, K>
 
 // LiteField with predefined types
-export type DefinedLiteField<V, K extends string> = {
+export type DefinedLiteField<V, K extends string = string> = {
 	get value(): V
 	onInput(value: V): void
 	onBlur(): void
