@@ -8,8 +8,8 @@ import {
 	setErrorsArr,
 	setValue,
 } from './utils';
-import { asArray } from './internalUtils';
-import { createEffect } from 'solid-js';
+import { asArray, filterFalsy, isMaybeArrayEmpty } from './internalUtils';
+import { createEffect, createMemo } from 'solid-js';
 
 export type LiteField<V extends object = object, K extends FoldValuePaths<V> = any> = DefinedLiteField<PathValue<V, K>, K>
 
@@ -30,7 +30,7 @@ type ValidateOn = 'input' | 'blur';
 export type LiteFieldOptions<V extends object, K extends FoldValuePaths<V>> = {
 	of:          LiteForm<V>,
 	path:        K,
-	validation?(value: PathValue<V, K>): MaybeArray<string> | undefined
+	validate?:   MaybeArray<(value: PathValue<V, K>) => MaybeArray<string> | undefined>
 	/**
 	 * Set when validation should run
 	 * input - when onInput is triggered
@@ -41,11 +41,13 @@ export type LiteFieldOptions<V extends object, K extends FoldValuePaths<V>> = {
 }
 
 export function createField<V extends object, K extends FoldValuePaths<V>>(options: LiteFieldOptions<V, K>): LiteField<V, K> {
-	const validate = (value: PathValue<V, K>) => {
-		if (!options.validation || !options.of.canValidate) return;
+	const canValidate = createMemo(() => !isMaybeArrayEmpty(options.validate));
 
-		const errors = options.validation!(value);
-		if (!errors) return clearErrors(options.of, options.path);
+	const validate = (value: PathValue<V, K>) => {
+		if (!canValidate() || !options.of.canValidate) return;
+
+		const errors = filterFalsy(asArray(options.validate!).flatMap((fn) => fn(value)));
+		if (!errors?.length) return clearErrors(options.of, options.path);
 		setErrorsArr(options.of, options.path, asArray(errors));
 	};
 
@@ -78,9 +80,8 @@ export function createField<V extends object, K extends FoldValuePaths<V>>(optio
 	};
 
 	createEffect(() => {
-		if (!options.validation || !options.of.dirty) return;
 		// When form is submitted trigger all validation
-		validate(res.value);
+		if (options.of.dirty) validate(res.value);
 	});
 
 	return res;
