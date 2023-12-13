@@ -7,7 +7,8 @@
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "pub": "pnpm build && npm publish"
   },
   "keywords": [],
   "author": "untlsn",
