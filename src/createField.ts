@@ -29,7 +29,7 @@ type ValidateOn = 'input' | 'blur';
 
 export type LiteFieldOptions<V extends object, K extends FoldValuePaths<V>> = {
 	of:          LiteForm<V>,
-	path:        K,
+	name:        K,
 	validate?:   MaybeArray<(value: PathValue<V, K>) => MaybeArray<string> | undefined>
 	/**
 	 * Set when validation should run
@@ -47,29 +47,29 @@ export function createField<V extends object, K extends FoldValuePaths<V>>(optio
 		if (!canValidate() || !options.of.canValidate) return;
 
 		const errors = filterFalsy(asArray(options.validate!).flatMap((fn) => fn(value)));
-		if (!errors?.length) return clearErrors(options.of, options.path);
-		setErrorsArr(options.of, options.path, asArray(errors));
+		if (!errors?.length) return clearErrors(options.of, options.name);
+		setErrorsArr(options.of, options.name, asArray(errors));
 	};
 
 	const res: LiteField<V, K> = {
 		get value() {
-			return getValue(options.of, options.path) as PathValue<V, K>;
+			return getValue(options.of, options.name) as PathValue<V, K>;
 		},
 		onInput(value) {
-			setValue(options.of, options.path, value);
+			setValue(options.of, options.name, value);
 			options.validateOn != 'blur' && validate(value);
 		},
 		onBlur() {
 			options.validateOn == 'blur' && validate(res.value);
 		},
 		get error() {
-			return getError(options.of, options.path);
+			return getError(options.of, options.name);
 		},
 		get errorArr() {
-			return getErrorsArr(options.of, options.path);
+			return getErrorsArr(options.of, options.name);
 		},
 		get name() {
-			return options.path;
+			return options.name;
 		},
 		focusable(element: HTMLElement) {
 			createEffect(() => {
