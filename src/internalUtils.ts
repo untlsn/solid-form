@@ -21,3 +21,11 @@ export function access<T>(value: MaybeAccessor<T>): T {
 	if (typeof value == 'function') return (value as Accessor<T>)();
 	return value;
 }
+
+/**
+ * Convert value to string
+ * If value is undefined, null or object convert to empty string
+ */
+export function safeStringParse(value: unknown): string {
+	return value == undefined || typeof value == 'object' ? '' : String(value);
+}
