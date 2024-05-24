@@ -19,7 +19,7 @@ export function createField<T extends object, K extends KeyOf<T>>(options: LiteF
 			return options.of[0].values[options.of[1]];
 		},
 		setValue(newValue) {
-			options.of[0].setValues(options.of[1], newValue as T[K]);
+			options.of[0].setValues(options.of[1] as any, newValue as T[K]);
 		},
 		fieldList: options.of[0]._fields,
 

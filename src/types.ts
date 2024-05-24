@@ -1,4 +1,5 @@
 import type { Accessor, Setter } from 'solid-js';
+import { SetStoreFunction } from 'solid-js/store';
 
 export type MaybeArray<T> = T | T[];
 export type KeyOf<T> = Extract<keyof T, string>;
@@ -19,13 +20,10 @@ export type LiteFieldController = {
 	error?: string[]
 }
 
-type FullSetter<T> = (old: T) => T;
-
 export type FormController<T extends object> = {
-	initialValues?: Partial<T>,
-	values:         Partial<T>,
-	setValues<K extends keyof T>(key: K, value: T[K]): void,
-	setValues(whole: FullSetter<Partial<T>>,): void,
+	initialValues?: T,
+	values:         T,
+	setValues:      SetStoreFunction<T>,
 	_fields:        LiteFieldController[],
 
 	submitted?: boolean
