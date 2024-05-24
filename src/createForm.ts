@@ -5,14 +5,6 @@ export function createForm<T extends object>(initialValues?: Partial<T>): FormCo
 	const [values, setValues] = createStore<Partial<T>>(initialValues);
 	const _fields: LiteFieldController[] = [];
 
-	if (import.meta.env.DEV) {
-		window.form = () => ({
-			initialValues,
-			values, setValues,
-			_fields,
-		});
-	}
-
 	return {
 		initialValues,
 		values, setValues,

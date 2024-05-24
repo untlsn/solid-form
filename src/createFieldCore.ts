@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, type Accessor } from 'solid-js';
 import { FieldCore, LiteFieldController, MaybeAccessor, Validation } from './types';
-import { triggerFieldValidation } from './utils';
+import triggerFieldValidation from './utils/triggerFieldValidation.ts';
 import { access } from './internalUtils';
 
 export type FieldCoreOptions<T, K extends string | undefined = undefined> = {

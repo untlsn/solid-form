@@ -1,6 +1,4 @@
-import type { FieldCore, FormController, KeyOf, Validation } from './types';
-import { asArray } from './internalUtils';
-import { createField } from './createField';
+import type { FieldCore, FormController, Validation } from '../types.ts';
 import { batch, type ComponentProps, createEffect } from 'solid-js';
 import { reconcile, unwrap } from 'solid-js/store';
 
@@ -115,14 +113,6 @@ export function unwrapValues<T extends object>(form: FormController<T>) {
 	return unwrap(form.values) as T;
 }
 
-function onlyString(value: unknown) {
-	return typeof value == 'string';
-}
-
-export function triggerFieldValidation(value: any, validate: Validation<any>) {
-	const newErrors = asArray(validate?.(value)).filter(onlyString) as string[];
-	return newErrors.length ? newErrors : undefined;
-}
 
 export function triggerValidation(form: FormController<any>) {
 	let clear = true;
@@ -185,14 +175,6 @@ export function validationSome<T>(arr: Exclude<Validation<T>, undefined>[]): Val
 export function createPredefinedGetter<T extends object, R>(formStore: FormController<T>, cb: (value: T) => R) {
 	return () => cb(unwrap(formStore.values) as any);
 }
-
-export function createRegistry<T extends object>(formState: FormController<T>) {
-	return <K extends KeyOf<T>>(name: K, validate?: Validation<Partial<T>[K]>) => createField({
-		of: [formState, name],
-		validate,
-	});
-}
-
 
 type ObjectSetter<T extends object> = { [K in keyof T]?: (oldValue: T[K]) => T[K] | undefined };
 

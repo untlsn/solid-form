@@ -1,5 +1,4 @@
-import type { FormController, KeyOf, Validation } from './types';
-import type { FieldCore } from './createFieldCore';
+import type { FormController, KeyOf, Validation, FieldCore } from './types';
 import { createFieldCore } from './createFieldCore';
 
 

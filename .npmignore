@@ -1,5 +1,8 @@
 src
 node_modules
 pnpm-lock.yaml
+bun.lockb
+.eslintrc.yml
+.eslintignore
 rollup.config.js
 tsconfig.json
