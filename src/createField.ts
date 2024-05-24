@@ -1,88 +1,33 @@
-import { FoldValuePaths, MaybeArray, PathValue } from './types';
-import { LiteForm } from './createForm';
-import {
-	clearErrors,
-	getError,
-	getErrorsArr,
-	getValue,
-	setErrorsArr,
-	setValue,
-} from './utils';
-import { asArray, filterFalsy, isMaybeArrayEmpty } from './internalUtils';
-import { createEffect, createMemo } from 'solid-js';
+import type { FormController, KeyOf, Validation } from './types';
+import type { FieldCore } from './createFieldCore';
+import { createFieldCore } from './createFieldCore';
 
-export type LiteField<V extends object = object, K extends FoldValuePaths<V> = any> = DefinedLiteField<PathValue<V, K>, K>
 
-// LiteField with predefined types
-export type DefinedLiteField<V, K extends string = string> = {
-	get value(): V
-	onInput(value: V): void
-	onBlur(): void
-	name: K
-	get error(): string | undefined
-	get errorArr(): string[]
-	// Allow form to focus on error
-	focusable(element: HTMLElement): void
-}
+export type LiteField<T extends object = object, K extends KeyOf<T> = any> = FieldCore<T[K], K>
 
-type ValidateOn = 'input' | 'blur';
-
-export type LiteFieldOptions<V extends object, K extends FoldValuePaths<V>> = {
-	of:          LiteForm<V>,
-	name:        K,
-	validate?:   MaybeArray<(value: PathValue<V, K>) => MaybeArray<string> | undefined>
+export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
+	/* tuple of formState and name. Typescript work better when both props are in tuple */
+	of:        [formState: FormController<T>, name: K],
 	/**
-	 * Set when validation should run
-	 * input - when onInput is triggered
-	 * blur - when onBlur is triggered
-	 * @default input
+	 * Maybe array of functions that return one or more errors. Falsy values will be ignored
 	 */
-	validateOn?: ValidateOn
+	validate?: Validation<Partial<T>[K]>
 }
 
-export function createField<V extends object, K extends FoldValuePaths<V>>(options: LiteFieldOptions<V, K>): LiteField<V, K> {
-	const canValidate = createMemo(() => !isMaybeArrayEmpty(options.validate));
+export function createField<T extends object, K extends KeyOf<T>>(options: LiteFieldOptions<T, K>): LiteField<T, K> {
+	return createFieldCore({
+		value() {
+			return options.of[0].values[options.of[1]];
+		},
+		setValue(newValue) {
+			options.of[0].setValues(options.of[1], newValue as T[K]);
+		},
+		fieldList: options.of[0]._fields,
 
-	const validate = (value: PathValue<V, K>) => {
-		if (!canValidate() || !options.of.canValidate) return;
-
-		const errors = filterFalsy(asArray(options.validate!).flatMap((fn) => fn(value)));
-		if (!errors?.length) return clearErrors(options.of, options.name);
-		setErrorsArr(options.of, options.name, asArray(errors));
-	};
-
-	const res: LiteField<V, K> = {
-		get value() {
-			return getValue(options.of, options.name) as PathValue<V, K>;
+		submitted() {
+			return options.of[0].submitted;
 		},
-		onInput(value) {
-			setValue(options.of, options.name, value);
-			options.validateOn != 'blur' && validate(value);
-		},
-		onBlur() {
-			options.validateOn == 'blur' && validate(res.value);
-		},
-		get error() {
-			return getError(options.of, options.name);
-		},
-		get errorArr() {
-			return getErrorsArr(options.of, options.name);
-		},
-		get name() {
-			return options.name;
-		},
-		focusable(element: HTMLElement) {
-			createEffect(() => {
-				if (!res.error) return void element.removeAttribute('data-error-focus');
-				element.setAttribute('data-error-focus', options.of.name);
-			});
-		},
-	};
-
-	createEffect(() => {
-		// When form is submitted trigger all validation
-		if (options.of.dirty) validate(res.value);
+		name:     options.of[1],
+		validate: options.validate,
 	});
-
-	return res;
 }

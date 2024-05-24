@@ -1,116 +1,206 @@
-import { LiteForm } from './createForm';
-import { FoldValuePaths, PathValue } from './types';
-import { DefinedLiteField } from './createField';
-import { ComponentProps } from 'solid-js';
+import type { FormController, KeyOf, Validation } from './types';
+import { asArray } from './internalUtils';
+import { createField } from './createField';
+import { batch, type ComponentProps, createEffect } from 'solid-js';
+import { reconcile, unwrap } from 'solid-js/store';
+import type { FieldCore } from './createFieldCore';
 
-// Pick value from object and fill missing objects
-export function getPathPick<V extends object, K extends FoldValuePaths<V>>(value: V, path: K): PathValue<V, K> {
-	const pathArr = path.split('.');
-	const last = pathArr.pop()!;
+// Track initialValues and reset store when values change
+export function createFormReload<T extends object>(formStore: FormController<T>, values: () => Partial<T> | undefined) {
+	let first = true;
 
-	const picker: Record<string, any> = pathArr.length ? pathArr.reduce((acc, cur) => {
-		let value = acc[cur];
-		if (!value) {
-			value = {};
-			acc[cur] = value;
-		}
-		return value;
-	}, value as Record<string, any>) : value;
+	createEffect(() => {
+		const snap = values() || {};
+		if (first) return first = false;
+		formStore.setValues(reconcile(snap));
+	});
 
-	return picker[last];
+	return formStore;
 }
 
-// Get value from store
-export function getValue<V extends object, K extends FoldValuePaths<V>>(form: LiteForm<V>, path: K) {
-	return getPathPick(form.store, path as FoldValuePaths<Partial<V>>);
+export function resetStore(form: FormController<any>) {
+	const init = form.initialValues;
+	form.setValues(reconcile(init || {}));
 }
-
 /**
  * Convert value to string
- * If value is undefined or null convert to empty string
+ * If value is undefined, null or object convert to empty string
  */
-export function safeStringParse(value: unknown) {
-	return value == undefined ? '' : String(value);
+export function safeStringParse(value: unknown): string {
+	return value == undefined || typeof value == 'object' ? '' : String(value);
 }
 
-// Set value from form
-export function setValue<V extends object, K extends FoldValuePaths<V>>(form: LiteForm<V>, path: K, value: PathValue<V, K>) {
-	(form.setStore as any)(...path.split('.'), value);
+// Set value only when value is defined
+export function setDefinedValue<T extends object, K extends keyof T>(form: FormController<T>, name: K, value: T[K] | undefined | null) {
+	if (value == undefined) return;
+	form.setValues(name, value);
 }
 
 // Convert field to satisfies html input props
-export function handleHtmlInput<T extends DefinedLiteField<string | undefined, string>>(field: T) {
+export function handleHtmlInput<T extends FieldCore<string | undefined>>(field: T) {
 	return {
 		get value() {
 			return safeStringParse(field.value);
 		},
-		onInput(ev) {
-			field.onInput(ev.currentTarget.value);
+		onInput(ev: { currentTarget: { value: string } }) {
+			field.onChange(ev.currentTarget.value);
 		},
-		onBlur: field.onBlur,
 		get name() {
 			return field.name;
 		},
-		ref: field.focusable,
+		get id() {
+			return field.name;
+		},
+		ref(ref: HTMLElement) {
+			field.ref(ref);
+		},
 		get 'aria-errormessage'() {
 			return field.error;
 		},
-	} satisfies ComponentProps<'input'>;
+	};
 }
 
 /**
- * Convert field to satisfies html input props and handle numbers
+ * Create validations that work only if inner flag match validation flag.
+ * Useful when form have multiple submit buttons that require deferment validation
+ * Remember undefined is flag too
+ *
+ * @param defaultInnerFlag - default flag for check
+ * @param defaultValidationFlag - default flag of validation
  */
-export function handleHtmlNumberInput<T extends DefinedLiteField<number | undefined, string>>(field: T) {
+export function createFlagValidationFactory<TFlag = unknown>(defaultInnerFlag?: TFlag, defaultValidationFlag?: TFlag): [
+	createValidation: <T>(cb: Validation<T>, flag?: TFlag) => Validation<T>,
+	setFlag: (newFlag: TFlag) => void
+] {
+	let flag = defaultInnerFlag;
+
+	return [
+		(cb, validationFlag = defaultValidationFlag) => {
+			return (value) => {
+				if (flag != validationFlag) return;
+				return cb?.(value);
+			};
+		},
+		(newFlag) => {
+			flag = newFlag;
+		},
+	];
+}
+
+/**
+ * Convert field to satisfies html input props and handle number. Force input to be number
+ */
+export function handleHtmlNumberInput<T extends FieldCore<number | undefined>>(field: T) {
 	return {
 		get value() {
 			return safeStringParse(field.value);
 		},
+		type: 'number',
 		onInput(ev) {
-			// Handle both type=number and type=string
-			const value = ev.currentTarget.type == 'number'
-				? ev.currentTarget.valueAsNumber
-				: Number(ev.currentTarget.value);
-			field.onInput(Number.isNaN(value) ? undefined : value);
+			const value = ev.currentTarget.valueAsNumber;
+			field.onChange(isNaN(value) ? undefined : value);
 		},
-		onBlur: field.onBlur,
 		get name() {
 			return field.name;
 		},
-		ref: field.focusable,
+		ref(ref) {
+			field.ref(ref);
+		},
 		get 'aria-errormessage'() {
 			return field.error;
 		},
 	} satisfies ComponentProps<'input'>;
 }
 
-export function handleAsUncontrolled(props: ComponentProps<'input'>) {
-	return { ...props, value: undefined };
+export function unwrapValues<T extends object>(form: FormController<T>) {
+	return unwrap(form.values) as T;
 }
 
-export function getError<V extends object, K extends FoldValuePaths<V>>(form: LiteForm<V>, path: K) {
-	return form.errors[path]?.[0];
+function onlyString(value: unknown) {
+	return typeof value == 'string';
 }
 
-export function getErrorsArr<V extends object, K extends FoldValuePaths<V>>(form: LiteForm<V>, path: K) {
-	return form.errors[path];
+export function triggerFieldValidation(value: any, validate: Validation<any>) {
+	const newErrors = asArray(validate?.(value)).filter(onlyString) as string[];
+	return newErrors.length ? newErrors : undefined;
 }
 
-export function setError<V extends object, K extends FoldValuePaths<V>>(form: LiteForm<V>, path: K, error: string) {
-	(form.setErrors as any)(path, [error]);
+export function triggerValidation(form: FormController<any>) {
+	let clear = true;
+	let firstRef = true;
+	form.submitted = true;
+	batch(() => {
+		form._fields.forEach(({ validate, ref: getRef }) => {
+			if (!validate() || !firstRef) return;
+			const ref = getRef?.();
+			if (firstRef && ref) {
+				ref.focus();
+				firstRef = false;
+			}
+			clear = false;
+		});
+	});
+	return clear;
 }
 
-export function setErrorsArr<V extends object, K extends FoldValuePaths<V>>(form: LiteForm<V>, path: K, error: string[]) {
-	(form.setErrors as any)(path, error);
-}
-export function clearErrors<V extends object, K extends FoldValuePaths<V>>(form: LiteForm<V>, path: K) {
-	(form.setErrors as any)(path, undefined);
+export function formPrevent(ev: Event) {
+	ev.preventDefault();
+	ev.stopPropagation();
 }
 
-export function handleSubmit<V extends object>(form: LiteForm<V>): ComponentProps<'form'>['onSubmit'] {
-	return (ev) => {
-		ev.preventDefault();
-		ev.stopPropagation();
-		form.onSubmit();
+export function createHandleSubmit<T extends object>(form: FormController<T>, onSubmit: (values: T) => void) {
+	return (ev?: Event) => {
+		if (ev) formPrevent(ev);
+		form.submitted = true;
+		triggerValidation(form) && onSubmit(unwrap(form.values) as any);
 	};
+}
+
+/**
+ * This function just execute cb
+ * @param cb return extended form, feel free to mutate form object
+ */
+export function formSetup<T extends object, TExtends extends object>(
+	cb: () => FormController<T> & TExtends,
+) {
+	return cb();
+}
+
+export function formWith<T extends object, TExtends extends object>(
+	formState: FormController<T>,
+	withObj: (form: FormController<T>) => TExtends,
+): FormController<T> & TExtends {
+	return Object.assign(formState, withObj(formState));
+}
+
+export function validationSome<T>(arr: Exclude<Validation<T>, undefined>[]): Validation<T> {
+	return (value) => {
+		for (const fn of arr) {
+			const errors = fn(value);
+			if (!errors || Array.isArray(errors) && !errors.length) continue;
+			return errors;
+		}
+	};
+}
+
+export function createPredefinedGetter<T extends object, R>(formStore: FormController<T>, cb: (value: T) => R) {
+	return () => cb(unwrap(formStore.values) as any);
+}
+
+export function createRegistry<T extends object>(formState: FormController<T>) {
+	return <K extends KeyOf<T>>(name: K, validate?: Validation<Partial<T>[K]>) => createField({
+		of: [formState, name],
+		validate,
+	});
+}
+
+
+type ObjectSetter<T extends object> = { [K in keyof T]?: (oldValue: T[K]) => T[K] | undefined };
+
+export function createSetter<T extends object>(formStore: FormController<T>, values: ObjectSetter<T>) {
+	Object.entries(values).forEach(([key, setter]) => {
+		createEffect(() => {
+			(formStore.setValues as any)(key, setter);
+		});
+	});
 }

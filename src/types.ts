@@ -1,34 +1,32 @@
-type FieldValue = string | string[] | number | boolean | File | File[] | Date | undefined | null;
-type TupleKeys<T extends Array<any>> = Exclude<keyof T, keyof any[]>;
-type IsTuple<T extends Array<any>> = number extends T['length'] ? false : true;
-type ValuePath<K extends string | number, T> = T extends string[] ? FoldValuePath<K, T> : T extends FieldValue | Blob ? `${K}` : `${K}.${ValuePaths<T>}`;
-type FoldValuePath<K extends string | number, T> = `${K}` | `${K}.${ValuePaths<T>}`;
-
-// Covert object to end path string
-export type ValuePaths<T> = T extends Array<infer TChild> ? IsTuple<T> extends true ? {
-	[TKey in TupleKeys<T>]-?: ValuePath<TKey & string, T[TKey]>;
-}[TupleKeys<T>] : ValuePath<number, TChild> : {
-	[TKey in keyof T]-?: ValuePath<TKey & string, T[TKey]>;
-}[keyof T];
+import type { Accessor } from 'solid-js';
 
 export type MaybeArray<T> = T | T[];
+export type KeyOf<T> = Extract<keyof T, string>;
+export type KeyOfType<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T] & string;
+export type ValidationReturn = MaybeArray<string | any>;
+export type MaybeAccessor<T> = T | Accessor<T>
+export type ReqValidation<T> = {
+	(value: T | undefined): ValidationReturn,
+	// Is empty is true, then function will be triggered without value and return is ignored
+	empty?: boolean
+}
+export type Validation<T> = ReqValidation<T> | undefined
 
-export type FieldValues = {
-	[name: string]: MaybeArray<FieldValue | FieldValues>
+export type LiteFieldController = {
+	ref?():   HTMLElement | undefined,
+	validate(): boolean
+	/** @DEV */
+	error?: string[]
 }
 
-export type FoldValuePaths<T> = T extends Array<infer TChild> ? IsTuple<T> extends true ? {
-	[TKey in TupleKeys<T>]-?: FoldValuePath<TKey & string, T[TKey]>;
-}[TupleKeys<T>] : FoldValuePath<number, TChild> : {
-	[TKey in keyof T]-?: FoldValuePath<TKey & string, T[TKey]>;
-}[keyof T];
+type FullSetter<T> = (old: T) => T;
 
-type ArrayPath<K extends string | number, T> = T extends Array<any> ? `${K}` | `${K}.${ArrayPaths<T>}` : T extends FieldValues ? `${K}.${ArrayPaths<T>}` : never;
-type ArrayPaths<TValue> = TValue extends Array<infer TChild> ? IsTuple<TValue> extends true ? {
-	[TKey in TupleKeys<TValue>]-?: ArrayPath<TKey & string, TValue[TKey]>;
-}[TupleKeys<TValue>] : ArrayPath<number, TChild> : {
-	[TKey in keyof TValue]-?: ArrayPath<TKey & string, TValue[TKey]>;
-}[keyof TValue];
+export type FormController<T extends object> = {
+	initialValues?: Partial<T>,
+	values:         Partial<T>,
+	setValues<K extends keyof T>(key: K, value: T[K]): void,
+	setValues(whole: FullSetter<Partial<T>>,): void,
+	_fields:        LiteFieldController[],
 
-
-export type PathValue<TValue, TPath> = TPath extends `${infer TKey1}.${infer TKey2}` ? TKey1 extends keyof TValue ? TKey2 extends ValuePaths<TValue[TKey1]> | ArrayPaths<TValue[TKey1]> ? PathValue<TValue[TKey1], TKey2> : never : TKey1 extends `${number}` ? TValue extends Array<infer TChild> ? PathValue<TChild, TKey2 & (ValuePaths<TChild> | ArrayPaths<TChild>)> : never : never : TPath extends keyof TValue ? TValue[TPath] : never;
+	submitted?: boolean
+}

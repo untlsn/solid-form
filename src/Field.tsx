@@ -1,19 +1,17 @@
-import { createField, LiteField, LiteFieldOptions } from './createField';
-import { FoldValuePaths } from './types';
-import { LiteForm } from './createForm';
-import { JSXElement } from 'solid-js';
+import { createField, type LiteField, type LiteFieldOptions } from './createField';
+import type { FormController, KeyOf } from './types';
 
-export type FieldProps<V extends object, K extends FoldValuePaths<V>> = LiteFieldOptions<V, K> & {
-	children(field: LiteField<V, K>): JSXElement
+export type FieldProps<T extends object, K extends KeyOf<T>> = LiteFieldOptions<T, K> & {
+	children(field: LiteField<T, K>): JSXElement
 }
 
-export function Field<V extends object, K extends FoldValuePaths<V>>(props: FieldProps<V, K>) {
+export function Field<T extends object, K extends KeyOf<T>>(props: FieldProps<T, K>) {
 	return props.children(createField(props));
 }
 
-export function createFieldFactory<V extends object>(form: LiteForm<V>) {
-	return <K extends FoldValuePaths<V>>(props: Omit<FieldProps<V, K>, 'of'>) => (
-		<Field of={form} {...props}>
+export function createFieldFactory<T extends object>(form: FormController<T>) {
+	return <K extends KeyOf<T>>(props: Omit<FieldProps<T, K>, 'of'> & { name: K }) => (
+		<Field of={[form, props.name]} {...props}>
 			{props.children}
 		</Field>
 	);
