@@ -1,9 +1,8 @@
-import type { FormController, KeyOf, Validation } from './types';
+import type { FieldCore, FormController, KeyOf, Validation } from './types';
 import { asArray } from './internalUtils';
 import { createField } from './createField';
 import { batch, type ComponentProps, createEffect } from 'solid-js';
 import { reconcile, unwrap } from 'solid-js/store';
-import type { FieldCore } from './createFieldCore';
 
 // Track initialValues and reset store when values change
 export function createFormReload<T extends object>(formStore: FormController<T>, values: () => Partial<T> | undefined) {

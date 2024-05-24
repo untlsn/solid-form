@@ -1,4 +1,4 @@
-import type { Accessor } from 'solid-js';
+import type { Accessor, Setter } from 'solid-js';
 
 export type MaybeArray<T> = T | T[];
 export type KeyOf<T> = Extract<keyof T, string>;
@@ -29,4 +29,17 @@ export type FormController<T extends object> = {
 	_fields:        LiteFieldController[],
 
 	submitted?: boolean
+}
+
+export type FieldCore<T, K extends string = string> = {
+	get value(): T | undefined
+	onChange(value: T): void
+	name: K
+	get error(): string | undefined
+	get errorArr(): string[] | undefined
+	// Allow form to focus on error
+	ref(element: HTMLElement): void
+
+	setErrors: Setter<string[] | undefined>
+	validate(): boolean,
 }

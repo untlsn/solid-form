@@ -1,5 +1,5 @@
-import { createSignal, onCleanup, type Accessor, type Setter } from 'solid-js';
-import type { LiteFieldController, MaybeAccessor, Validation } from './types';
+import { createSignal, onCleanup, type Accessor } from 'solid-js';
+import { FieldCore, LiteFieldController, MaybeAccessor, Validation } from './types';
 import { triggerFieldValidation } from './utils';
 import { access } from './internalUtils';
 
@@ -15,19 +15,6 @@ export type FieldCoreOptions<T, K extends string | undefined = undefined> = {
 	 * Maybe array of functions that return one or more errors. Falsy values will be ignored
 	 */
 	validate?: Validation<T>
-}
-
-export type FieldCore<T, K extends string = string> = {
-	get value(): T | undefined
-	onChange(value: T): void
-	name: K
-	get error(): string | undefined
-	get errorArr(): string[] | undefined
-	// Allow form to focus on error
-	ref(element: HTMLElement): void
-
-	setErrors: Setter<string[] | undefined>
-	validate(): boolean,
 }
 
 export function createFieldCore<T, K extends string = string>(options: FieldCoreOptions<T, K>): FieldCore<T, K> {
