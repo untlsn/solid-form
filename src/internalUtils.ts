@@ -1,4 +1,4 @@
-import type { MaybeAccessor } from './types';
+import type { MaybeAccessor, Validation } from './types';
 import type { Accessor } from 'solid-js';
 
 export type Falsy = undefined | null | 0 | '' | false;
@@ -28,4 +28,13 @@ export function access<T>(value: MaybeAccessor<T>): T {
  */
 export function safeStringParse(value: unknown): string {
 	return value == undefined || typeof value == 'object' ? '' : String(value);
+}
+
+function onlyString(value: unknown) {
+	return typeof value == 'string';
+}
+
+export function validateValue<T>(value: T, validate: Validation<T>) {
+	const newErrors = asArray(validate?.(value)).filter(onlyString) as string[];
+	return newErrors.length ? newErrors : undefined;
 }

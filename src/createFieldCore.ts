@@ -1,7 +1,6 @@
 import { createSignal, onCleanup, type Accessor } from 'solid-js';
 import { AnyFieldCore, FieldCore, MaybeAccessor, Validation } from './types';
-import triggerFieldValidation from './utils/triggerFieldValidation.ts';
-import { access } from './internalUtils';
+import { access, validateValue } from './internalUtils';
 
 /**
  * @prop value will be passed as getter to field value
@@ -73,7 +72,7 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 		const validate = options.validate;
 		if (!validate || !submitted) return false;
 		if (validate.empty) return validate(undefined);
-		const newErrors = triggerFieldValidation(options.value(), validate);
+		const newErrors = validateValue(options.value(), validate);
 		setErrors(newErrors);
 		return !!newErrors?.length;
 	};

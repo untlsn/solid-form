@@ -1,8 +1,7 @@
 import { FormController } from '~/types.ts';
 
 /**
- * This function just execute cb
- * @param cb return extended form, feel free to mutate form object
+ * @deprecated formController should not be extended
  */
 export default function formSetup<T extends object, TExtends extends object>(
 	cb: () => FormController<T> & TExtends,

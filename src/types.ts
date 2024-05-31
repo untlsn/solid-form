@@ -36,6 +36,7 @@ export type FormController<T extends object> = {
  * @prop error shortcut for errorArr[0]
  * @prop errorArr array that contain all errors that validate return
  * @prop ref function that assign html element to field
+ * @prop getRef return html element assigned to field
  * @prop setErrors function that change errors of field, in 90% cases should not be used directly
  * @prop validate function that validate field and return if field is successfully validated
  *
@@ -46,8 +47,8 @@ export type FieldCore<T, K extends string | undefined = string> = {
 	name: K
 	get error(): string | undefined
 	get errorArr(): string[] | undefined
-	// Allow form to focus on error
 	ref(element: HTMLElement): void
+	getRef(): HTMLElement
 
 	setErrors: Setter<string[] | undefined>
 	validate(): boolean,
