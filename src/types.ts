@@ -13,24 +13,35 @@ export type ReqValidation<T> = {
 }
 export type Validation<T> = ReqValidation<T> | undefined
 
-export type LiteFieldController = {
-	ref?():   HTMLElement | undefined,
-	validate(): boolean
-	/** @DEV */
-	error?: string[]
-}
-
+/**
+ * Object that contain necessary props for form
+ * @prop values - store containing form values
+ * @prop setValues - setter that allow to change form values
+ * @prop _fields - array of field assigned to this for that allow you to handle
+ * @prop submitted
+ */
 export type FormController<T extends object> = {
-	initialValues?: T,
-	values:         T,
-	setValues:      SetStoreFunction<T>,
-	_fields:        LiteFieldController[],
+	values:    T,
+	setValues: SetStoreFunction<T>,
+	_fields:   FieldCore<any, any>[],
 
 	submitted?: boolean
 }
 
-export type FieldCore<T, K extends string = string> = {
-	get value(): T | undefined
+/**
+ * Object that all field should use or at least extend
+ * @prop value trackable getter that return value assigned to field
+ * @prop onChange function that require same type as value prop, should change value assigned to field
+ * @prop name name of field
+ * @prop error shortcut for errorArr[0]
+ * @prop errorArr array that contain all errors that validate return
+ * @prop ref function that assign html element to field
+ * @prop setErrors function that change errors of field, in 90% cases should not be used directly
+ * @prop validate function that validate field and return if field is successfully validated
+ *
+ */
+export type FieldCore<T, K extends string | undefined = string> = {
+	get value(): T
 	onChange(value: T): void
 	name: K
 	get error(): string | undefined
@@ -41,3 +52,8 @@ export type FieldCore<T, K extends string = string> = {
 	setErrors: Setter<string[] | undefined>
 	validate(): boolean,
 }
+/**
+ * Shortcut for FieldCore<unknown, string | undefined>
+ * Useful when want to handle bunth of field and don't know they types
+ */
+export type AnyFieldCore = FieldCore<unknown, string | undefined>
