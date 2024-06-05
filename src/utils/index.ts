@@ -1,13 +1,9 @@
 export { default as createFlagValidationFactory } from './createFlagValidationFactory';
-export { default as createPredefinedGetter } from './createPredefinedGetter';
 export { default as formPrevent } from './formPrevent';
 export { default as handleHtmlInput } from './handleHtmlInput';
 export { default as triggerValidation } from './triggerValidation';
 export { default as createRegistry } from './createRegistry';
-export { default as formSetup } from './formSetup';
 export { default as handleHtmlNumberInput } from './handleHtmlNumberInput';
-export { default as unwrapValues } from './unwrapValues';
 export { default as createHandleSubmit } from './createHandleSubmit';
 export { default as createSetter } from './createSetter';
-export { default as formWith } from './formWith';
 export { default as validationSome } from './validationSome';
