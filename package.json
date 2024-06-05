@@ -1,14 +1,14 @@
 {
   "name": "@un-tlsn/solid-form",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "",
   "type": "module",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
-    "pub": "rollup -c && npm publish --access public"
+    "build": "tsup",
+    "pub": "tsup && npm publish --access public"
   },
   "keywords": [],
   "author": "untlsn",
@@ -23,9 +23,8 @@
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-solid": "^0.13.0",
-    "rollup": "^4.8.0",
-    "rollup-preset-solid": "^2.0.1",
     "solid-js": "^1.8.7",
+    "tsup": "^8.1.0",
     "typescript": "^5.3.3",
     "vite": "^5.2.11"
   }

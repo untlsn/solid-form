@@ -3,4 +3,4 @@ export * from './createField';
 export * from './createFieldCore';
 export * from './types';
 export * from './utils';
-export * from './Field';
+export * from './Field.ts';
