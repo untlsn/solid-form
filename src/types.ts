@@ -1,5 +1,4 @@
 import type { Accessor, Setter } from 'solid-js';
-import { SetStoreFunction } from 'solid-js/store';
 
 export type MaybeArray<T> = T | T[];
 export type KeyOf<T> = Extract<keyof T, string>;
@@ -16,14 +15,12 @@ export type Validation<T> = ReqValidation<T> | undefined
 /**
  * Object that contain necessary props for form
  * @prop values - store containing form values
- * @prop setValues - setter that allow to change form values
  * @prop _fields - array of field assigned to this for that allow you to handle
  * @prop submitted
  */
 export type FormController<T extends object> = {
-	values:    T,
-	setValues: SetStoreFunction<T>,
-	_fields:   FieldCore<any, any>[],
+	values:  T,
+	_fields: FieldCore<any, any>[],
 
 	submitted?: boolean
 }

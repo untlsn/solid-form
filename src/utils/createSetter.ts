@@ -1,5 +1,5 @@
 import type { FormController } from '~/types.ts';
-import { createEffect } from 'solid-js';
+import { createEffect, untrack } from 'solid-js';
 
 type ObjectSetter<T extends object> = { [K in keyof T]?: (oldValue: T[K]) => T[K] | undefined };
 
@@ -25,9 +25,9 @@ type ObjectSetter<T extends object> = { [K in keyof T]?: (oldValue: T[K]) => T[K
  * })
  */
 export default function createSetter<T extends object>(form: FormController<T>, values: ObjectSetter<T>) {
-	Object.entries(values).forEach(([key, setter]) => {
+	(Object.entries(values) as [keyof T, any][]).forEach(([key, setter]) => {
 		createEffect(() => {
-			(form.setValues as any)(key, setter);
+			form.values[key] = setter(untrack(() => form.values[key]));
 		});
 	});
 }
