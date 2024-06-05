@@ -1,7 +1,7 @@
-import type { FormController } from '~/types.ts';
+import type { FormController } from '../types.ts';
 import { unwrap } from 'solid-js/store';
-import formPrevent from '~/utils/formPrevent.ts';
-import triggerValidation from '~/utils/triggerValidation.ts';
+import formPrevent from './formPrevent.ts';
+import triggerValidation from './triggerValidation.ts';
 
 /**
  * Create submitter for form. When executed form.submitted will be toggled to true, all fields validation will be triggered and if validation is successful onSubmit argument will be executed

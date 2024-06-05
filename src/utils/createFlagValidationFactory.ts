@@ -1,4 +1,4 @@
-import { Validation } from '~/types.ts';
+import { Validation } from '../types.ts';
 
 /**
  * Create validations that work only if inner flag match validation flag.

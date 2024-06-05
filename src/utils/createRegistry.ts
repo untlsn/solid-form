@@ -1,5 +1,5 @@
-import type { FormController, KeyOf, Validation } from '~/types.ts';
-import { createField } from '~/createField.ts';
+import type { FormController, KeyOf, Validation } from '../types.ts';
+import { createField } from '../createField.ts';
 
 /**
  * Shortcut for createField that predefine form controller

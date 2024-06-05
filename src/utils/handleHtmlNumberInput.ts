@@ -1,5 +1,5 @@
-import { FieldCore } from '~/types.ts';
-import { safeStringParse } from '~/internalUtils.ts';
+import { FieldCore } from '../types.ts';
+import { safeStringParse } from '../internalUtils.ts';
 import { ComponentProps } from 'solid-js';
 
 /**

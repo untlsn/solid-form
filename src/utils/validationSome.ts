@@ -1,4 +1,4 @@
-import type { Validation } from '~/types.ts';
+import type { Validation } from '../types.ts';
 
 /**
  * It will convert array of validations to single validate function

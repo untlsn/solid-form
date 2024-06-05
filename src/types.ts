@@ -45,7 +45,7 @@ export type FieldCore<T, K extends string | undefined = string> = {
 	get error(): string | undefined
 	get errorArr(): string[] | undefined
 	ref(element: HTMLElement): void
-	getRef(): HTMLElement
+	getRef(): HTMLElement | undefined
 
 	setErrors: Setter<string[] | undefined>
 	validate(): boolean,

@@ -1,5 +1,5 @@
-import { FieldCore } from '~/types.ts';
-import { safeStringParse } from '~/internalUtils.ts';
+import { FieldCore } from '../types.ts';
+import { safeStringParse } from '../internalUtils.ts';
 
 /** Convert field to satisfies html input props */
 export default function handleHtmlInput<T extends FieldCore<string | undefined>>(field: T) {

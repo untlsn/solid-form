@@ -1,4 +1,4 @@
-import type { FormController } from '~/types.ts';
+import type { FormController } from '../types.ts';
 import { createEffect, untrack } from 'solid-js';
 
 type ObjectSetter<T extends object> = { [K in keyof T]?: (oldValue: T[K]) => T[K] | undefined };

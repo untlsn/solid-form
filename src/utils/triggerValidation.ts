@@ -1,4 +1,4 @@
-import type { FormController } from '~/types.ts';
+import type { FormController } from '../types.ts';
 import { batch } from 'solid-js';
 
 /**
