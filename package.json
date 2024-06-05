@@ -1,5 +1,5 @@
 {
-  "name": "solid-form-lite",
+  "name": "@un-tlsn/solid-form",
   "version": "0.1.0",
   "description": "",
   "type": "module",
@@ -8,7 +8,7 @@
   "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "pub": "npm publish"
+    "pub": "npm publish --access public"
   },
   "keywords": [],
   "author": "untlsn",
