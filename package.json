@@ -1,7 +1,7 @@
 {
   "name": "@un-tlsn/solid-form",
-  "version": "0.2.4",
-  "description": "",
+  "version": "0.3.0",
+  "description": "A simple yet powerful modular library to create forms with solidjs",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -10,7 +10,13 @@
     "build": "tsup",
     "pub": "tsup && npm publish --access public"
   },
-  "keywords": [],
+  "keywords": [
+    "solidjs",
+    "valibot",
+    "form",
+    "validation",
+    "modular"
+  ],
   "author": "untlsn",
   "license": "MIT",
   "peerDependencies": {
