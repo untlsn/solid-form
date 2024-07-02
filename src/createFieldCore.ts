@@ -78,9 +78,12 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 	};
 	validate.empty = true;
 
-	const self = {
-		onChange: options.setValue,
-		name:     options.name,
+	const self: FieldCore<T, K> = {
+		onChange(value) {
+			options.setValue(value);
+			validate();
+		},
+		name: options.name,
 		validate,
 		get value() {
 			return options.value();
