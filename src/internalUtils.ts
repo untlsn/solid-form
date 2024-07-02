@@ -1,4 +1,4 @@
-import type { MaybeAccessor, Validation } from './types';
+import type { EmptyValidation, MaybeAccessor, Validation } from './types';
 import type { Accessor } from 'solid-js';
 
 export type Falsy = undefined | null | 0 | '' | false;
@@ -37,4 +37,8 @@ function onlyString(value: unknown) {
 export function validateValue<T>(value: T, validate: Validation<T>) {
 	const newErrors = asArray(validate?.(value)).filter(onlyString) as string[];
 	return newErrors.length ? newErrors : undefined;
+}
+
+export function isEmptyValidation(validation: Validation<unknown>): validation is EmptyValidation {
+	return validation?.empty == true;
 }

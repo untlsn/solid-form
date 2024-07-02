@@ -3,7 +3,7 @@ import { createFieldCore } from './createFieldCore';
 
 export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
 	of:        [formState: FormController<T>, name: K],
-	validate?: Validation<Partial<T>[K]>
+	validate?: Validation<T[K]>
 }
 
 /**

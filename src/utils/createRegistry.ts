@@ -16,7 +16,7 @@ import { createField } from '../createField.ts';
  * createField({ of: [form, 'a'], validate: (it) => !it && 'Field required' })
  */
 export default function createRegistry<T extends object>(form: FormController<T>) {
-	return <K extends KeyOf<T>>(name: K, validate?: Validation<Partial<T>[K]>) => createField({
+	return <K extends KeyOf<T>>(name: K, validate?: Validation<T[K]>) => createField({
 		of: [form, name],
 		validate,
 	});

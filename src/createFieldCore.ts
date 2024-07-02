@@ -71,7 +71,7 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 		const submitted = access(options.submitted);
 		const validate = options.validate;
 		if (!validate || !submitted) return false;
-		if (validate.empty) return validate(undefined);
+		if (validate.empty) return validate();
 		const newErrors = validateValue(options.value(), validate);
 		setErrors(newErrors);
 		return !!newErrors?.length;

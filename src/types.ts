@@ -6,11 +6,14 @@ export type KeyOfType<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[k
 export type ValidationReturn = MaybeArray<string | any>;
 export type MaybeAccessor<T> = T | Accessor<T>
 export type ReqValidation<T> = {
-	(value: T | undefined): ValidationReturn,
-	// Is empty is true, then function will be triggered without value and return is ignored
-	empty?: boolean
+	(value: T): ValidationReturn,
+	empty?: false,
 }
-export type Validation<T> = ReqValidation<T> | undefined
+export type EmptyValidation = {
+	(): ValidationReturn,
+	empty: true,
+}
+export type Validation<T> = ReqValidation<T> | EmptyValidation | undefined
 
 /**
  * Object that contain necessary props for form
