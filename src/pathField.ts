@@ -22,12 +22,15 @@ export type PathFieldOptions<T extends object, K extends Path<T>> = {
 export function createPathField<T extends object, K extends Path<T>>(options: PathFieldOptions<T, K>): FieldCore<PathValue<T, K>, K> {
 	return createFieldCore({
 		value() {
-			return options.of[1].split('.').reduce((acc, cur) => acc[cur], options.of[0].values as any);
+			return options.of[1].split('.').reduce((acc, cur) => acc?.[cur], options.of[0].values as any);
 		},
 		setValue(newValue) {
 			const keys = options.of[1].split('.');
 			const last = keys.pop()!;
-			keys.reduce((acc, cur) => acc[cur], options.of[0].values as any)[last] = newValue;
+			keys.reduce((acc, cur) => {
+				acc[cur] ??= {};
+				return acc[cur];
+			}, options.of[0].values as any)[last] = newValue;
 		},
 		fieldList: options.of[0]._fields,
 
