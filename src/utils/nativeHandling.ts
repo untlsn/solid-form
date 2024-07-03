@@ -1,7 +1,7 @@
 import { FieldCore } from '../types.ts';
 import { safeStringParse } from '../internalUtils.ts';
 
-type OnEvent = (ev: { currentTarget: HTMLInputElement }) => void
+type OnEvent = (ev: { currentTarget: HTMLInputElement }) => void;
 
 type NativeHandler = {
 	readonly value:                string,
@@ -12,9 +12,9 @@ type NativeHandler = {
 	onChange?:                     OnEvent
 	ref:                           (ref: HTMLElement) => void,
 	readonly 'aria-errormessage'?: string,
-}
+};
 
-type NativeHandlerEvent = 'input' | 'change'
+type NativeHandlerEvent = 'input' | 'change';
 
 function injectEvent(handler: NativeHandler, eventFn: OnEvent, eventType: NativeHandlerEvent = 'input') {
 	if (eventType == 'change') handler.onChange = eventFn;
