@@ -8,6 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "pub": "tsup && npm publish --access public"
   },
   "keywords": [

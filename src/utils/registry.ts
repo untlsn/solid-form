@@ -1,5 +1,5 @@
 import type { FieldCore, FormController, KeyOf, Validation } from '../types.ts';
-import { createField } from '../createField.ts';
+import { createField } from '../field.ts';
 import * as v from 'valibot';
 
 

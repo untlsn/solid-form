@@ -1,5 +1,5 @@
 import type { FormController, KeyOf, Validation, FieldCore } from './types';
-import { createFieldCore } from './createFieldCore';
+import { createFieldCore } from './fieldCore.ts';
 
 export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
 	of:        [formState: FormController<T>, name: K],

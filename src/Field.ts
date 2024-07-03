@@ -1,5 +1,5 @@
 import { JSXElement } from 'solid-js';
-import { createField, type LiteFieldOptions } from './createField';
+import { createField, type LiteFieldOptions } from './field.ts';
 import type { FieldCore, KeyOf } from './types';
 
 export type FieldProps<T extends object, K extends KeyOf<T>> = LiteFieldOptions<T, K> & {
