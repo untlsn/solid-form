@@ -4,16 +4,16 @@ export type MaybeArray<T> = T | T[];
 export type KeyOf<T> = Extract<keyof T, string>;
 export type KeyOfType<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T] & string;
 export type ValidationReturn = MaybeArray<string | any>;
-export type MaybeAccessor<T> = T | Accessor<T>
+export type MaybeAccessor<T> = T | Accessor<T>;
 export type ReqValidation<T> = {
 	(value: T): ValidationReturn,
 	empty?: false,
-}
+};
 export type EmptyValidation = {
 	(): ValidationReturn,
 	empty: true,
-}
-export type Validation<T> = ReqValidation<T> | EmptyValidation | undefined
+};
+export type Validation<T> = ReqValidation<T> | EmptyValidation | undefined;
 
 /**
  * Object that contain necessary props for form
@@ -26,7 +26,7 @@ export type FormController<T extends object> = {
 	_fields: FieldCore<any, any>[],
 
 	submitted?: boolean
-}
+};
 
 /**
  * Object that all field should use or at least extend
@@ -43,18 +43,34 @@ export type FormController<T extends object> = {
  */
 export type FieldCore<T, K extends string | undefined = string> = {
 	get value(): T
-	onChange(value: T): void
-	name: K
+	onChange: (value: T) => void
+	name:     K
 	get error(): string | undefined
 	get errorArr(): string[] | undefined
-	ref(element: HTMLElement): void
-	getRef(): HTMLElement | undefined
+	ref:      (element: HTMLElement) => void
+	getRef:   () => HTMLElement | undefined
 
 	setErrors: Setter<string[] | undefined>
-	validate(): boolean,
-}
+	validate:  () => boolean,
+};
 /**
  * Shortcut for FieldCore<unknown, string | undefined>
  * Useful when want to handle bunth of field and don't know they types
  */
-export type AnyFieldCore = FieldCore<unknown, string | undefined>
+export type AnyFieldCore = FieldCore<any, string | undefined>;
+// Allow script or nullable version of field
+export type LooseFieldCore<T, K extends string | undefined = string> = FieldCore<T, K> | FieldCore<T | undefined, K>;
+
+export type Path<T> = T extends (infer R)[]
+	? `${Path<R>}`
+	: T extends object
+		? { [K in KeyOf<T>]: `${K}` | `${K}.${Path<T[K]>}` }[KeyOf<T>]
+		: never;
+
+export type PathValue<TObject, TPath extends string> = TPath extends keyof TObject
+	? TObject[TPath]
+	: TPath extends `${infer K}.${infer TRest}`
+		? K extends keyof TObject
+			? PathValue<TObject[K], TRest>
+			: never
+		: never;

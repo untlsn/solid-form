@@ -1,4 +1,4 @@
-import { FieldCore } from '../types.ts';
+import { FieldCore, LooseFieldCore } from '../types.ts';
 import { safeStringParse } from '../internalUtils.ts';
 
 type OnEvent = (ev: { currentTarget: HTMLInputElement }) => void;
@@ -23,7 +23,7 @@ function injectEvent(handler: NativeHandler, eventFn: OnEvent, eventType: Native
 }
 
 /** Convert field to satisfies html input props */
-export function nativeHandling<T extends FieldCore<string | undefined>>(
+export function handleHtmlInput<T extends LooseFieldCore<string>>(
 	field: T,
 	eventType: NativeHandlerEvent = 'input',
 ): NativeHandler {

@@ -1,16 +1,28 @@
 import type { FormController, KeyOf, Validation, FieldCore } from './types';
 import { createFieldCore } from './fieldCore.ts';
+import { JSXElement } from 'solid-js';
+
+export type FieldProps<T extends object, K extends KeyOf<T>> = LiteFieldOptions<T, K> & {
+	children: (field: FieldCore<T[K], K>) => JSXElement
+};
+
+/**
+ * Component version of createField
+ */
+export function Field<T extends object, K extends KeyOf<T>>(props: FieldProps<T, K>) {
+	return props.children(createField(props));
+}
 
 export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
 	of:        [formState: FormController<T>, name: K],
 	validate?: Validation<T[K]>
-}
+};
 
 /**
  * Default wrapper over createFieldCore
  * Should be used in 90% of cases
  * Accept primitive and object values
- * For deep values and other advanced cases use createFieldCore
+ * For deep values use createPathField and for other advanced cases use createFieldCore
  *
  * @param options options object with of tuple for value assignment and optional validate function
  *
