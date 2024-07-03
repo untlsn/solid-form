@@ -67,8 +67,8 @@ export type Path<T> = T extends (infer R)[]
 		? { [K in KeyOf<T>]: `${K}` | `${K}.${Path<T[K]>}` }[KeyOf<T>]
 		: never;
 
-export type PathValue<TObject, TPath extends string> = TPath extends keyof TObject
-	? TObject[TPath]
+export type PathValue<TObject, TPath extends string> = TPath extends keyof NonNullable<TObject>
+	? NonNullable<TObject>[TPath]
 	: TPath extends `${infer K}.${infer TRest}`
 		? K extends keyof TObject
 			? PathValue<TObject[K], TRest>
