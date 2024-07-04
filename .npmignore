@@ -4,5 +4,5 @@ pnpm-lock.yaml
 bun.lockb
 .eslintrc.yml
 .eslintignore
-rollup.config.js
+tsup.config.ts
 tsconfig.json
