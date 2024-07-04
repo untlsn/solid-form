@@ -44,7 +44,7 @@ export function isEmptyValidation(validation: Validation<unknown>): validation i
 	return validation?.empty == true;
 }
 
-export function valibotValidation<T extends AnyObjectSchema>(schema: T, name: keyof T['entries'], abortEarly?: boolean): Validation<unknown> {
+export function _valibotValidation<T extends AnyObjectSchema>(schema: T, name: keyof T['entries'], abortEarly?: boolean): Validation<unknown> {
 	return (value) => {
 		const parse = v.safeParse(schema.entries[name], value, { abortEarly });
 		if (parse.success) return;

@@ -1,10 +1,12 @@
 import type { AnyObjectSchema, FieldCore, FormController, KeyOf, Validation } from '../types.ts';
 import { createField } from '../field.ts';
 import * as v from 'valibot';
-import { valibotValidation } from '../internalUtils.ts';
 
 
-export type Registry<T extends object> =  <K extends KeyOf<T>>(name: K, validate?: Validation<T[K]>) => FieldCore<T[K], K>;
+export type Registry<T extends object> =  {
+	<K extends KeyOf<T>>(name: K, validate?: Validation<T[K]>): FieldCore<T[K], K>,
+	__keys__: T,
+};
 /**
  * Shortcut for createField that predefine form controller
  * @param form - form controller
@@ -20,46 +22,30 @@ export type Registry<T extends object> =  <K extends KeyOf<T>>(name: K, validate
  * createField({ of: [form, 'a'], validate: (it) => !it && 'Field required' })
  */
 export function createRegistry<T extends object>(form: FormController<T>): Registry<T> {
-	return <K extends KeyOf<T>>(name: K, validate?: Validation<T[K]>) => createField({
+	return (<K extends KeyOf<T>>(name: K, validate?: Validation<T[K]>) => createField({
 		of: [form, name],
 		validate,
-	});
+	})) as Registry<T>;
 }
 
-export type ValibotRegistry<TSchema extends v.ObjectSchema<any, any>> =
-	<K extends KeyOf<v.InferInput<TSchema>>>(name: K, abortEarly?: boolean) => FieldCore<v.InferInput<TSchema>[K], K>;
+type GenericRegistry = {
+	(name: any, validate?: Validation<any>): FieldCore<any, any>,
+	__keys__: Record<string, any>,
+};
 
-/**
- * Wrap registry to replace default validation function with valibot schema
- *
- * It's only check for errors, no transformation will be passed to value
- *
- * By default, registry only check for first error (abortEarly),
- * but you can change this by setting abortEarly in creator or function to false
- * Function will inherit abortEarly from creator
- *
- * @example
- * const Schema = v.object({
- * 	a: v.pipe(v.string('Field required'), v.minLength(1, 'Field required'));
- * })
- * const form = createForm<v.InferInput<typeof Schema>>({ a: 'string' });
- *
- * const register = createValibotRegistry(form, Schema);
- *
- *
- * register('a');
- * // Same as
- * createField({ of: [form, 'a'], validate: (it) => !it || typeof it != 'string' })
- */
-export function createValibotRegistry<TSchema extends AnyObjectSchema>(
-	form: FormController<v.InferInput<TSchema>>,
+type ValibotRegister<T extends GenericRegistry> =
+	<K extends KeyOf<T['__keys__']>>(name: K, abortEarly?: boolean) => FieldCore<T['__keys__'][K], K>;
+
+export function valibotValidation<TSchema extends AnyObjectSchema, TRegistry extends GenericRegistry>(
+	registry: TRegistry,
 	schema: TSchema,
 	willAbortEarly = true,
-): ValibotRegistry<TSchema> {
-	return <K extends KeyOf<v.InferInput<TSchema>>>(name: K, abortEarly = willAbortEarly) => {
-		return createField<v.InferInput<TSchema>, K>({
-			of:       [form, name],
-			validate: valibotValidation(schema, name, abortEarly),
+): ValibotRegister<TRegistry> {
+	return (name: string, abortEarly = willAbortEarly) => {
+		return registry(name, (value) => {
+			const parse = v.safeParse(schema.entries[name], value, { abortEarly });
+			if (parse.success) return;
+			return parse.issues.map((it) => it.message);
 		});
 	};
 }
