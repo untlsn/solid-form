@@ -11,15 +11,15 @@ import { access, validateValue } from './internalUtils';
  * @prop validate function that will run when field if validated
  */
 export type FieldCoreOptions<T, K extends string | undefined = undefined> = {
-	value: Accessor<T>
-	setValue(newValue: T): void
+	value:    Accessor<T>
+	setValue: (newValue: T) => void
 
 	fieldList: AnyFieldCore[],
 
 	submitted: MaybeAccessor<boolean | undefined>
 	name:      K,
 	validate?: Validation<T>
-}
+};
 
 /**
  * Core of every createField*

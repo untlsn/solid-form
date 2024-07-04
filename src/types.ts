@@ -1,4 +1,5 @@
 import type { Accessor, Setter } from 'solid-js';
+import type * as v from 'valibot';
 
 export type MaybeArray<T> = T | T[];
 export type KeyOf<T> = Extract<keyof T, string>;
@@ -74,3 +75,5 @@ export type PathValue<TObject, TPath extends string> = TPath extends keyof NonNu
 			? PathValue<TObject[K], TRest>
 			: never
 		: never;
+
+export type AnyObjectSchema = v.ObjectSchema<any, any>;

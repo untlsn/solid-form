@@ -1,5 +1,6 @@
-import type { EmptyValidation, MaybeAccessor, Validation } from './types';
+import { AnyObjectSchema, EmptyValidation, MaybeAccessor, Validation } from './types';
 import type { Accessor } from 'solid-js';
+import * as v from 'valibot';
 
 export type Falsy = undefined | null | 0 | '' | false;
 
@@ -41,4 +42,12 @@ export function validateValue<T>(value: T, validate: Validation<T>) {
 
 export function isEmptyValidation(validation: Validation<unknown>): validation is EmptyValidation {
 	return validation?.empty == true;
+}
+
+export function valibotValidation<T extends AnyObjectSchema>(schema: T, name: keyof T['entries'], abortEarly?: boolean): Validation<v.InferInput<T>> {
+	return (value: v.InferInput<T>) => {
+		const parse = v.safeParse(schema.entries[name], value, { abortEarly });
+		if (parse.success) return;
+		return parse.issues.map((it) => it.message);
+	};
 }
