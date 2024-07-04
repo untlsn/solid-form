@@ -14,7 +14,8 @@ export function Field<T extends object, K extends KeyOf<T>>(props: FieldProps<T,
 }
 
 export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
-	of:        [formState: FormController<T>, name: K],
+	form:      FormController<T>,
+	name:      K
 	validate?: Validation<T[K]>
 };
 
@@ -32,20 +33,15 @@ export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
  * createField({ of: [form, 'value'], validate: (it) => it < 0 && 'value cannot be negative'})
  * createField({ of: [form, 'deepValue'], validate: (it) => it.a == it.b && 'deepValue a and b must be identical' })
  */
-export function createField<T extends object, K extends KeyOf<T>>(options: LiteFieldOptions<T, K>): FieldCore<T[K], K> {
+export function createField<T extends object, K extends KeyOf<T>>({ form, validate, name }: LiteFieldOptions<T, K>): FieldCore<T[K], K> {
 	return createFieldCore({
-		value() {
-			return options.of[0].values[options.of[1]];
-		},
+		value: () => form.values[name],
 		setValue(newValue) {
-			options.of[0].values[options.of[1]] = newValue;
+			form.values[name] = newValue;
 		},
-		fieldList: options.of[0]._fields,
-
-		submitted() {
-			return options.of[0].submitted;
-		},
-		name:     options.of[1],
-		validate: options.validate,
+		fieldList: form._fields,
+		submitted: () => form.submitted,
+		name,
+		validate,
 	});
 }

@@ -26,7 +26,6 @@ export function createPathRegistry<T extends object>(
 	form: FormController<T>,
 ): PathRegistry<T> {
 	return (<K extends Path<T>>(name: K, validate?: Validation<PathValue<T, K>>) => createPathField({
-		of: [form, name],
-		validate,
+		form, name, validate,
 	})) as PathRegistry<T>;
 }

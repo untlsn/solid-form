@@ -23,8 +23,7 @@ export type Registry<T extends object> =  {
  */
 export function createRegistry<T extends object>(form: FormController<T>): Registry<T> {
 	return (<K extends KeyOf<T>>(name: K, validate?: Validation<T[K]>) => createField({
-		of: [form, name],
-		validate,
+		form, name, validate,
 	})) as Registry<T>;
 }
 

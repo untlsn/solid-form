@@ -2,7 +2,8 @@ import type { FieldCore, FormController, Path, PathValue, Validation } from './t
 import { createFieldCore } from './fieldCore.ts';
 
 export type PathFieldOptions<T extends object, K extends Path<T>> = {
-	of:        [formState: FormController<T>, name: K],
+	form:      FormController<T>,
+	name:      K
 	validate?: Validation<PathValue<T, K>>
 };
 
@@ -19,25 +20,20 @@ export type PathFieldOptions<T extends object, K extends Path<T>> = {
  *
  * createField({ of: [form, 'deepValue.a'], validate: (it) => !it 'deepValue.a cannot be 0' })
  */
-export function createPathField<T extends object, K extends Path<T>>(options: PathFieldOptions<T, K>): FieldCore<PathValue<T, K>, K> {
+export function createPathField<T extends object, K extends Path<T>>({ name, form, validate }: PathFieldOptions<T, K>): FieldCore<PathValue<T, K>, K> {
 	return createFieldCore({
-		value() {
-			return options.of[1].split('.').reduce((acc, cur) => acc?.[cur], options.of[0].values as any);
-		},
+		value: () => name.split('.').reduce((acc, cur) => acc?.[cur], form.values as any),
 		setValue(newValue) {
-			const keys = options.of[1].split('.');
+			const keys = name.split('.');
 			const last = keys.pop()!;
 			keys.reduce((acc, cur) => {
 				acc[cur] ??= {};
 				return acc[cur];
-			}, options.of[0].values as any)[last] = newValue;
+			}, form.values as any)[last] = newValue;
 		},
-		fieldList: options.of[0]._fields,
-
-		submitted() {
-			return options.of[0].submitted;
-		},
-		name:     options.of[1],
-		validate: options.validate,
+		fieldList: form._fields,
+		submitted: () => form.submitted,
+		name,
+		validate,
 	});
 }
