@@ -6,3 +6,4 @@ bun.lockb
 .eslintignore
 tsup.config.ts
 tsconfig.json
+.idea
