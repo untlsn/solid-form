@@ -1,19 +1,7 @@
-import type { FormController, KeyOf, Validation, FieldCore } from './types';
+import type { FieldCore, FormController, KeyOf, Validation } from './types';
 import { createFieldCore } from './fieldCore.ts';
-import { JSXElement } from 'solid-js';
 
-export type FieldProps<T extends object, K extends KeyOf<T>> = LiteFieldOptions<T, K> & {
-	children: (field: FieldCore<T[K], K>) => JSXElement
-};
-
-/**
- * Component version of createField
- */
-export function Field<T extends object, K extends KeyOf<T>>(props: FieldProps<T, K>) {
-	return props.children(createField(props));
-}
-
-export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
+export type FieldOptions<T extends object, K extends KeyOf<T>> = {
 	form:      FormController<T>,
 	name:      K
 	validate?: Validation<T[K]>
@@ -33,7 +21,7 @@ export type LiteFieldOptions<T extends object, K extends KeyOf<T>> = {
  * createField({ of: [form, 'value'], validate: (it) => it < 0 && 'value cannot be negative'})
  * createField({ of: [form, 'deepValue'], validate: (it) => it.a == it.b && 'deepValue a and b must be identical' })
  */
-export function createField<T extends object, K extends KeyOf<T>>({ form, validate, name }: LiteFieldOptions<T, K>): FieldCore<T[K], K> {
+export function createField<T extends object, K extends KeyOf<T>>({ form, validate, name }: FieldOptions<T, K>): FieldCore<T[K], K> {
 	return createFieldCore({
 		value: () => form.values[name],
 		setValue(newValue) {
