@@ -1,6 +1,8 @@
 import { createSignal, onCleanup, type Accessor } from 'solid-js';
-import { AnyFieldCore, FieldCore, MaybeAccessor, Validation } from './types';
-import { access, validateValue } from './internalUtils';
+import type { AnyFieldCore, FieldCore, Validation } from './types';
+import { validateValue } from './internalUtils';
+import type { MaybeAccessor } from '@un-tlsn/utils';
+import { access } from '@un-tlsn/utils';
 
 /**
  * @prop value will be passed as getter to field value

@@ -1,17 +1,15 @@
-import type { Accessor, Setter } from 'solid-js';
+import type { MaybeArray } from '@un-tlsn/utils';
+import type { Setter } from 'solid-js';
 import type * as v from 'valibot';
+import type { KeyOf } from '@un-tlsn/utils';
 
-export type MaybeArray<T> = T | T[];
-export type KeyOf<T> = Extract<keyof T, string>;
-export type KeyOfType<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T] & string;
-export type ValidationReturn = MaybeArray<string | any>;
-export type MaybeAccessor<T> = T | Accessor<T>;
+export type { KeyOf };
 export type ReqValidation<T> = {
-	(value: T): ValidationReturn,
+	(value: T): MaybeArray<any>,
 	empty?: false,
 };
 export type EmptyValidation = {
-	(): ValidationReturn,
+	(): MaybeArray<any>,
 	empty: true,
 };
 export type Validation<T> = ReqValidation<T> | EmptyValidation | undefined;
@@ -62,18 +60,5 @@ export type AnyFieldCore = FieldCore<any, string | undefined>;
 // Allow script or nullable version of field
 export type LooseFieldCore<T, K extends string | undefined = string> = FieldCore<T, K> | FieldCore<T | undefined, K>;
 
-export type Path<T> = T extends (infer R)[]
-	? `${Path<R>}`
-	: T extends object
-		? { [K in KeyOf<T>]: `${K}` | `${K}.${Path<T[K]>}` }[KeyOf<T>]
-		: never;
-
-export type PathValue<TObject, TPath extends string> = TPath extends keyof NonNullable<TObject>
-	? NonNullable<TObject>[TPath]
-	: TPath extends `${infer K}.${infer TRest}`
-		? K extends keyof TObject
-			? PathValue<TObject[K], TRest>
-			: never
-		: never;
-
+export type { Path, PathValue } from '@un-tlsn/utils';
 export type AnyObjectSchema = v.ObjectSchema<any, any>;

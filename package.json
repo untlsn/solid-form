@@ -21,6 +21,7 @@
   "author": "untlsn",
   "license": "MIT",
   "peerDependencies": {
+    "@un-tlsn/utils": "^0.0.0",
     "solid-js": "^1.8.7",
     "valibot": "^0.35.0"
   },
