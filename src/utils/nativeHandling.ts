@@ -1,4 +1,4 @@
-import { FieldCore, LooseFieldCore } from '../types.ts';
+import type { FieldCore, LooseFieldCore } from '../types.ts';
 import { safeStringParse } from '../internalUtils.ts';
 
 type OnEvent = (ev: { currentTarget: HTMLInputElement }) => void;

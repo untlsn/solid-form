@@ -1,4 +1,4 @@
-import { Validation } from '../types.ts';
+import type { Validation } from '../types.ts';
 
 /**
  * Create validations that work only if inner flag match validation flag.
@@ -10,7 +10,7 @@ import { Validation } from '../types.ts';
  */
 export default function createFlagValidationFactory<TFlag = unknown>(defaultInnerFlag?: TFlag, defaultValidationFlag?: TFlag): [
 	createValidation: <T>(cb: Validation<T>, flag?: TFlag) => Validation<T>,
-	setFlag: (newFlag: TFlag) => void
+	setFlag: (newFlag: TFlag) => void,
 ] {
 	let flag = defaultInnerFlag;
 
