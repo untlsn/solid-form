@@ -3,8 +3,9 @@ import { unwrap } from 'solid-js/store';
 import formPrevent from './formPrevent.ts';
 import triggerValidation from './triggerValidation.ts';
 import * as v from 'valibot';
+import { type Accessor, startTransition, useTransition } from 'solid-js';
 
-type SubmitHandler = (ev?: Event) => void
+type SubmitHandler = (ev?: Event) => void;
 
 /**
  * Create submitter for form.
@@ -46,4 +47,23 @@ export function createValibotSubmit<TSchema extends v.BaseSchema<object, any, v.
 			field.setErrors(nested[field.name]);
 		});
 	};
+}
+
+/**
+ * Wrap function with transition. Should be used always when submission is passed to query or action
+ */
+export function useWithTransition(submit: SubmitHandler): [Accessor<boolean>, SubmitHandler] {
+	const [pending, start] = useTransition();
+
+	return [
+		pending,
+		(ev) => start(() => submit(ev)),
+	];
+}
+
+/**
+ * Wrap function with transition. Should be used always when submission is passed to query or action, but don't return pending state
+ */
+export function withTransition(submit: SubmitHandler): SubmitHandler {
+	return (ev) => startTransition(() => submit(ev));
 }
