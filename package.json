@@ -1,6 +1,6 @@
 {
   "name": "@un-tlsn/solid-form",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "A simple yet powerful modular library to create forms with solidjs",
   "type": "module",
   "main": "dist/index.js",
@@ -22,14 +22,14 @@
   "license": "MIT",
   "peerDependencies": {
     "@un-tlsn/utils": "^0.0.0",
-    "solid-js": "^1.8.7",
-    "valibot": "^0.35.0"
+    "solid-js": "^1.8.18",
+    "valibot": "^0.36.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.2",
-    "solid-js": "^1.8.7",
+    "typescript": "^5.5.3",
+    "solid-js": "^1.8.18",
     "tsup": "^8.1.0",
-    "valibot": "^0.35.0",
+    "valibot": "^0.36.0",
     "@un-tlsn/eslint": "^0.1.0"
   }
 }
