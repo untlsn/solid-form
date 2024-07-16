@@ -3,6 +3,7 @@ import type { Setter } from 'solid-js';
 import type * as v from 'valibot';
 import type { KeyOf } from '@un-tlsn/utils';
 
+export type SubmitHandler = (ev?: Event) => void;
 export type { KeyOf };
 export type ReqValidation<T> = {
 	(value: T): MaybeArray<any>,

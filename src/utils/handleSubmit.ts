@@ -1,11 +1,8 @@
-import type { FormController } from '../types.ts';
+import type { FormController, SubmitHandler } from '../types.ts';
 import { unwrap } from 'solid-js/store';
 import formPrevent from './formPrevent.ts';
 import triggerValidation from './triggerValidation.ts';
-import * as v from 'valibot';
 import { type Accessor, startTransition, useTransition } from 'solid-js';
-
-type SubmitHandler = (ev?: Event) => void;
 
 /**
  * Create submitter for form.
@@ -21,31 +18,6 @@ export function createHandleSubmit<T extends object>(form: FormController<T>, on
 		if (ev) formPrevent(ev);
 		form.submitted = true;
 		triggerValidation(form) && onSubmit(unwrap(form.values));
-	};
-}
-
-/**
- * Work like createHandleSubmit, but additionally validate values by valibot schema
- *
- * If raw is set to true, handler will ignore default validation from fields
- */
-export function createValibotSubmit<TSchema extends v.BaseSchema<object, any, v.BaseIssue<any>>>(
-	form: FormController<object>,
-	schema: TSchema,
-	onSubmit: (values: v.InferOutput<TSchema>) => void,
-	raw?: boolean,
-): SubmitHandler {
-	return (ev) => {
-		if (ev) formPrevent(ev);
-		form.submitted = true;
-		if (!raw && !triggerValidation(form)) return;
-		const parse = v.safeParse(schema, unwrap(form.values));
-		if (parse.success) onSubmit(parse.output);
-
-		const nested = !parse.success && v.flatten(parse.issues).nested || {};
-		form._fields.forEach((field) => {
-			field.setErrors(nested[field.name]);
-		});
 	};
 }
 
