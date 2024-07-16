@@ -7,3 +7,4 @@ export * from './registerPath.ts';
 export * from './handleSubmit.ts';
 export { default as createSetter } from './setter.ts';
 export { default as validationSome } from './validationSome';
+export * from './valibot.ts';
