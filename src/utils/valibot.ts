@@ -44,7 +44,8 @@ export function valibotValidation<TSchema extends AnyObjectSchema, TRegistry ext
 	willAbortEarly = true,
 ): ValibotRegister<TRegistry> {
 	return (name: string, abortEarly = willAbortEarly) => {
-		return registry(name, parseValibot(schema, { abortEarly }));
+		const fieldSchema = schema.entries[name];
+		return registry(name, fieldSchema ? parseValibot(fieldSchema, { abortEarly }) : undefined);
 	};
 }
 

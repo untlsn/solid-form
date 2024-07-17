@@ -1,6 +1,6 @@
 {
   "name": "@un-tlsn/solid-form",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "A simple yet powerful modular library to create forms with solidjs",
   "type": "module",
   "main": "dist/index.js",
