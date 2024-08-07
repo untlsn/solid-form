@@ -1,7 +1,7 @@
 import type { FormController, SubmitHandler } from '../types.ts';
 import { unwrap } from 'solid-js/store';
 import formPrevent from './formPrevent.ts';
-import triggerValidation from './validation.ts';
+import { triggerValidation } from './validation.ts';
 import { type Accessor, startTransition, useTransition } from 'solid-js';
 
 /**

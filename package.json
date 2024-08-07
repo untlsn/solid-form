@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "pub": "tsup && npm publish --access public"
+    "pub": "tsup && bunx jsr publish"
   },
   "keywords": [
     "solidjs",
@@ -23,13 +23,14 @@
   "peerDependencies": {
     "@un-tlsn/utils": "^0.0.0",
     "solid-js": "^1.8.18",
-    "valibot": "^0.36.0"
+    "valibot": "^0.37.0"
   },
   "devDependencies": {
+    "jsr": "^0.13.1",
     "typescript": "^5.5.3",
     "solid-js": "^1.8.18",
     "tsup": "^8.1.0",
-    "valibot": "^0.36.0",
+    "valibot": "^0.37.0",
     "@un-tlsn/eslint": "^0.1.0"
   }
 }
