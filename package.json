@@ -1,36 +1,19 @@
 {
-  "name": "@un-tlsn/solid-form",
-  "version": "0.4.6",
-  "description": "A simple yet powerful modular library to create forms with solidjs",
-  "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "pub": "tsup && bunx jsr publish"
+    "pub": "jsr publish"
   },
-  "keywords": [
-    "solidjs",
-    "valibot",
-    "form",
-    "validation",
-    "modular"
-  ],
-  "author": "untlsn",
-  "license": "MIT",
   "peerDependencies": {
-    "@un-tlsn/utils": "^0.0.0",
     "solid-js": "^1.8.18",
-    "valibot": "^0.37.0"
+    "valibot": "^0.37.0",
+    "@untlsn/utils": "npm:@jsr/untlsn__utils"
   },
   "devDependencies": {
+    "@un-tlsn/eslint": "^0.1.0",
+    "@untlsn/utils": "npm:@jsr/untlsn__utils",
     "jsr": "^0.13.1",
-    "typescript": "^5.5.3",
     "solid-js": "^1.8.18",
     "tsup": "^8.1.0",
-    "valibot": "^0.37.0",
-    "@un-tlsn/eslint": "^0.1.0"
+    "typescript": "^5.5.3",
+    "valibot": "^0.37.0"
   }
 }

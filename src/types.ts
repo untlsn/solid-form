@@ -1,7 +1,7 @@
-import type { MaybeArray } from '@un-tlsn/utils';
+import type { MaybeArray } from '@untlsn/utils';
 import type { Setter } from 'solid-js';
 import type * as v from 'valibot';
-import type { KeyOf } from '@un-tlsn/utils';
+import type { KeyOf } from '@untlsn/utils';
 
 export type SubmitHandler = ((ev?: Event) => void) & { error?: unknown };
 export type { KeyOf };
@@ -63,7 +63,7 @@ export type AnyFieldCore = FieldCore<any, string | undefined>;
 // Allow script or nullable version of field
 export type LooseFieldCore<T, K extends string | undefined = string> = FieldCore<T, K> | FieldCore<T | undefined, K>;
 
-export type { Path, PathValue } from '@un-tlsn/utils';
+export type { Path, PathValue } from '@untlsn/utils';
 export type AnyObjectSchema = v.ObjectSchema<any, any>;
 
 export type NonEmptyArray<T> = [T, ...T[]];

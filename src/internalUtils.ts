@@ -1,5 +1,5 @@
 import type { Validation } from './types';
-import { asArray } from '@un-tlsn/utils';
+import { asArray } from '@untlsn/utils';
 
 export function safeStringParse(value: unknown): string {
 	return value == undefined || typeof value == 'object' ? '' : String(value);
