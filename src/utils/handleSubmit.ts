@@ -1,7 +1,7 @@
 import type { FormController, SubmitHandler } from '../types.ts';
 import { unwrap } from 'solid-js/store';
 import formPrevent from './formPrevent.ts';
-import triggerValidation from './triggerValidation.ts';
+import triggerValidation from './validation.ts';
 import { type Accessor, startTransition, useTransition } from 'solid-js';
 
 /**
@@ -14,11 +14,16 @@ import { type Accessor, startTransition, useTransition } from 'solid-js';
  * @returns function that can be used synthetic or by event handler. In second scenario default behavior and propagation will be prevented
  */
 export function createHandleSubmit<T extends object>(form: FormController<T>, onSubmit: (values: T) => void): SubmitHandler {
-	return (ev) => {
+	const self: SubmitHandler = (ev) => {
 		if (ev) formPrevent(ev);
 		form.submitted = true;
-		triggerValidation(form) && onSubmit(unwrap(form.values));
+		try {
+			triggerValidation(form) && onSubmit(unwrap(form.values));
+		} catch (err) {
+			self.error = err;
+		}
 	};
+	return self;
 }
 
 /**

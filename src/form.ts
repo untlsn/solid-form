@@ -14,8 +14,9 @@ import type { FormController } from './types';
  * createField({ of: [form, 'deepValue'], validate: (it) => it.a == it.b && 'deepValue a and b must be identical' })
  * @param initialValues values that will be passed to store (object will be mutated)
  */
-export function createForm<T extends object>(initialValues: T): FormController<T>
-export function createForm<T extends object>(): FormController<Partial<T>>
+export function createForm<T extends object>(initialValues: T): FormController<T>;
+export function createForm<T extends object>(): FormController<Partial<T>>;
+export function createForm<T extends object>(initialValues?: T): FormController<Partial<T>>;
 export function createForm<T extends object>(initialValues?: T): FormController<Partial<T>> {
 	const values = createMutable<Partial<T>>(initialValues || {});
 

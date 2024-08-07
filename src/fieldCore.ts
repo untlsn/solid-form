@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, type Accessor } from 'solid-js';
 import type { AnyFieldCore, FieldCore, Validation } from './types';
-import { validateValue } from './internalUtils';
+import { validateValue, willThrow } from './internalUtils';
 import type { MaybeAccessor } from '@un-tlsn/utils';
 import { access } from '@un-tlsn/utils';
 
@@ -69,24 +69,27 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 	const [ref, setRef] = createSignal<HTMLElement>();
 	const [errors, setErrors] = createSignal<string[]>();
 
-	const validate = () => {
+	const validateField = () => {
 		const submitted = access(options.submitted);
 		const validate = options.validate;
-		if (!validate || !submitted) return false;
-		if (validate.empty) return validate();
+		if (!submitted || willThrow(self.validateSignal) || !validate) return false;
+		if (validate.empty)
+			try { return validate(); }
+			catch { return false; }
 		const newErrors = validateValue(options.value(), validate);
 		setErrors(newErrors);
 		return !!newErrors?.length;
 	};
-	validate.empty = true;
+	validateField.empty = true;
 
 	const self: FieldCore<T, K> = {
-		onChange(value) {
+		fresh: true,
+		onChange(value: any) {
 			options.setValue(value);
-			validate();
+			validateField();
 		},
-		name: options.name,
-		validate,
+		name:     options.name,
+		validate: validateField,
 		get value() {
 			return options.value();
 		},
@@ -99,7 +102,7 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 			return errors();
 		},
 		setErrors,
-	};
+	} as any;
 
 	const field = options.fieldList;
 	if (field) {

@@ -3,7 +3,7 @@ import type { Setter } from 'solid-js';
 import type * as v from 'valibot';
 import type { KeyOf } from '@un-tlsn/utils';
 
-export type SubmitHandler = (ev?: Event) => void;
+export type SubmitHandler = ((ev?: Event) => void) & { error?: unknown };
 export type { KeyOf };
 export type ReqValidation<T> = {
 	(value: T): MaybeArray<any>,
@@ -39,6 +39,7 @@ export type FormController<T extends object> = {
  * @prop getRef return html element assigned to field
  * @prop setErrors function that change errors of field, in 90% cases should not be used directly
  * @prop validate function that validate field and return if field is successfully validated
+ * @prop validateSignal is triggered every time validation will happen. Halt validation when throw
  *
  */
 export type FieldCore<T, K extends string | undefined = string> = {
@@ -50,8 +51,9 @@ export type FieldCore<T, K extends string | undefined = string> = {
 	ref:      (element: HTMLElement) => void
 	getRef:   () => HTMLElement | undefined
 
-	setErrors: Setter<string[] | undefined>
-	validate:  () => boolean,
+	setErrors:       Setter<string[] | undefined>
+	validate:        () => boolean,
+	validateSignal?: () => void,
 };
 /**
  * Shortcut for FieldCore<unknown, string | undefined>
@@ -63,3 +65,5 @@ export type LooseFieldCore<T, K extends string | undefined = string> = FieldCore
 
 export type { Path, PathValue } from '@un-tlsn/utils';
 export type AnyObjectSchema = v.ObjectSchema<any, any>;
+
+export type NonEmptyArray<T> = [T, ...T[]];
