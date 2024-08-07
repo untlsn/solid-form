@@ -131,7 +131,7 @@ const deepField = sf.createPathField({ form, name: 'very.deep.field'  })
 # Credits
 High credits for:
 Creators of [React Hook Form](https://react-hook-form.com/) - for inspiraction with register and path api\
-Creator of [valibot](https://valibot.dev/) and [modular-forms](https://modularforms.dev/)[Fabian Hiller](https://github.com/fabian-hiller) - for many inspirations for api and valibot spescialy now with pipe api\
+Creator of [valibot](https://valibot.dev/) and [modular-forms](https://modularforms.dev/) [Fabian Hiller](https://github.com/fabian-hiller) - for many inspirations for api and valibot spescialy now with pipe api\
 Creator of solid [https://github.com/ryansolid](https://github.com/ryansolid) - because without solid and it's api this library will be much more heavy or even don't exist at all\
 
 # License
