@@ -14,7 +14,7 @@ bunx jsr i @untlsn/solid-form
 
 # How to use
 
-@untlsn/solid-form is based on modularity, transparency and freedom, so at first time it can look too complex with a lot of boilerplate, but after some time it will feel like simple wrapper over solid primitives as it is.
+@untlsn/solid-form is based on modularity, transparency and freedom, so at first time it can look too complex with a lot of boilerplate, but after some time it will feel like simple wrapper over solid primitives as it is.\
 I highly suggest to use wildcard with this package. Recommended wildcard is sf
 ```js
 import * as sf from '@untlsn/solid-form';
@@ -130,9 +130,9 @@ const deepField = sf.createPathField({ form, name: 'very.deep.field'  })
 
 # Credits
 High credits for:
-Creators of [React Hook Form](https://react-hook-form.com/) - for inspiraction with register and path api
-Creator of [valibot](https://valibot.dev/) and [modular-forms](https://modularforms.dev/)[Fabian Hiller](https://github.com/fabian-hiller) - for many inspirations for api and valibot spescialy now with pipe api
-Creator of solid [https://github.com/ryansolid](https://github.com/ryansolid) - because without solid and it's api this library will be much more heavy or even don't exist at all
+Creators of [React Hook Form](https://react-hook-form.com/) - for inspiraction with register and path api\
+Creator of [valibot](https://valibot.dev/) and [modular-forms](https://modularforms.dev/)[Fabian Hiller](https://github.com/fabian-hiller) - for many inspirations for api and valibot spescialy now with pipe api\
+Creator of solid [https://github.com/ryansolid](https://github.com/ryansolid) - because without solid and it's api this library will be much more heavy or even don't exist at all\
 
 # License
 This library is completely free under the [MIT license](https://github.com/untlsn/solid-form/blob/main/LICENSE). At most you can tip a star on [GitHub](https://github.com/untlsn/solid-form)
