@@ -1,6 +1,9 @@
 import type { FieldCore, FormController, Path, PathValue, Validation } from './types.ts';
 import { createFieldCore } from './fieldCore.ts';
 
+/**
+ * Options for PathField. Looks similar to FieldOptions but name is not key of from, but path
+ */
 export type PathFieldOptions<T extends object, K extends Path<T>> = {
 	form:      FormController<T>,
 	name:      K
