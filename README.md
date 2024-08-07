@@ -112,7 +112,7 @@ const deepField = sf.createPathField({ form, name: 'very.deep.field'  })
 ```
 - Components
 	Every field is extension of FieldCore that return common api for field, so you can just spread it in most scenarios or if you create you own component that will be only used with @untlsn/solid-form you can extend your props with FieldCore or LooseFieldCore if you expect to allow undefined
-	```tsx
+```tsx
 	function Input(props: { label: string } & sf.LooseFieldCore<string>) {
 		return (
 			<div>
