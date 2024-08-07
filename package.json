@@ -5,11 +5,11 @@
   "peerDependencies": {
     "solid-js": "^1.8.18",
     "valibot": "^0.37.0",
-    "@untlsn/utils": "npm:@jsr/untlsn__utils"
+    "@untlsn/utils": "npm:@jsr/untlsn__utils@0.0.1"
   },
   "devDependencies": {
     "@un-tlsn/eslint": "^0.1.0",
-    "@untlsn/utils": "npm:@jsr/untlsn__utils",
+    "@untlsn/utils": "npm:@jsr/untlsn__utils@0.0.1",
     "jsr": "^0.13.1",
     "solid-js": "^1.8.18",
     "tsup": "^8.1.0",

@@ -5,6 +5,8 @@ import type { MaybeAccessor } from '@untlsn/utils';
 import { access } from '@untlsn/utils';
 
 /**
+ * Options for FieldCore
+ *
  * @prop value will be passed as getter to field value
  * @prop setValue will be passed as field onChange without change
  * @prop fieldList if defined on creation field will push itself to it

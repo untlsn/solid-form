@@ -3,16 +3,24 @@ import type { Setter } from 'solid-js';
 import type * as v from 'valibot';
 import type { KeyOf } from '@untlsn/utils';
 
+/**
+ * Simple function that can consume event and disable it default and propagation\
+ * Additionally it can contain error
+ */
 export type SubmitHandler = ((ev?: Event) => void) & { error?: unknown };
+
 export type { KeyOf };
+/** Required validation of field */
 export type ReqValidation<T> = {
 	(value: T): MaybeArray<any>,
 	empty?: false,
 };
+/** Not pure validation that not require any input. Mainly validation of other field */
 export type EmptyValidation = {
 	(): MaybeArray<any>,
 	empty: true,
 };
+/** Any validation that can be used with fields */
 export type Validation<T> = ReqValidation<T> | EmptyValidation | undefined;
 
 /**
@@ -60,10 +68,12 @@ export type FieldCore<T, K extends string | undefined = string> = {
  * Useful when want to handle bunth of field and don't know they types
  */
 export type AnyFieldCore = FieldCore<any, string | undefined>;
-// Allow script or nullable version of field
+
+/** Allow strict or nullable version of field */
 export type LooseFieldCore<T, K extends string | undefined = string> = FieldCore<T, K> | FieldCore<T | undefined, K>;
 
 export type { Path, PathValue } from '@untlsn/utils';
+/** ObjectSchema with all generics set to any */
 export type AnyObjectSchema = v.ObjectSchema<any, any>;
-
+/** Array that have at least one element */
 export type NonEmptyArray<T> = [T, ...T[]];

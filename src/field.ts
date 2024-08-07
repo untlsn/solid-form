@@ -1,6 +1,10 @@
 import type { FieldCore, FormController, KeyOf, Validation } from './types';
 import { createFieldCore } from './fieldCore.ts';
 
+/**
+ * Options for default field\
+ * Most of advanced fields will use similar schema
+ */
 export type FieldOptions<T extends object, K extends KeyOf<T>> = {
 	form:      FormController<T>,
 	name:      K

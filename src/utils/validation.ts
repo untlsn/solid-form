@@ -59,10 +59,16 @@ export function validationSome<T>(arr: Exclude<Validation<T>, undefined>[]): Val
 	};
 }
 
-export function mountValidationSignal(form: FormController<object>, validateSignal: () => void) {
-	onMount(() => {
+/**
+ * Insert validateSignal for all fields in form on first mount
+ * @returns function that will rebind validateSignal for fields including newest
+ */
+export function mountValidationSignal(form: FormController<object>, validateSignal: () => void): () => void {
+	const cb = () => {
 		form._fields.forEach((it) => {
 			it.validateSignal = validateSignal;
 		});
-	});
+	};
+	onMount(cb);
+	return cb;
 }
