@@ -62,12 +62,12 @@ export function createValibotSubmit<TSchema extends v.BaseSchema<object, any, v.
 	form: FormController<object>,
 	schema: TSchema,
 	onSubmit: (values: v.InferOutput<TSchema>) => void,
-	raw?: boolean,
+	options?: { raw?: boolean, },
 ): StatefulSubmitHandler {
 	const submit: StatefulSubmitHandler = (ev) => {
 		if (ev) formPrevent(ev);
 		form.submitted = true;
-		if (!raw && !triggerValidation(form)) return;
+		if (!options?.raw && !triggerValidation(form)) return;
 		const parse = v.safeParse(schema, unwrap(form.values));
 		if (parse.success) {
 			delete submit.error;
