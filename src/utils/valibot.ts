@@ -49,27 +49,40 @@ export function valibotValidation<TSchema extends AnyObjectSchema, TRegistry ext
 	};
 }
 
+type StatefulSubmitHandler = SubmitHandler & { error?: string[] };
+
 /**
  * Work like createHandleSubmit, but additionally validate values by valibot schema
  *
  * If raw is set to true, handler will ignore default validation from fields
+ *
+ * Additionally, its bind root errors to submit function
  */
 export function createValibotSubmit<TSchema extends v.BaseSchema<object, any, v.BaseIssue<any>>>(
 	form: FormController<object>,
 	schema: TSchema,
 	onSubmit: (values: v.InferOutput<TSchema>) => void,
 	raw?: boolean,
-): SubmitHandler {
-	return (ev) => {
+): StatefulSubmitHandler {
+	const submit: StatefulSubmitHandler = (ev) => {
 		if (ev) formPrevent(ev);
 		form.submitted = true;
 		if (!raw && !triggerValidation(form)) return;
 		const parse = v.safeParse(schema, unwrap(form.values));
-		if (parse.success) onSubmit(parse.output);
-
-		const nested = !parse.success && v.flatten(parse.issues).nested || {};
+		if (parse.success) {
+			delete submit.error;
+			form._fields.forEach((field) => {
+				field.setErrors(undefined);
+			});
+			onSubmit(parse.output);
+			return;
+		}
+		const flat = v.flatten(parse.issues);
+		const nested = flat.nested || {};
+		submit.error = flat.root;
 		form._fields.forEach((field) => {
 			field.setErrors(nested[field.name]);
 		});
 	};
+	return submit;
 }
