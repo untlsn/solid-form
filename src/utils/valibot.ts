@@ -44,7 +44,7 @@ type ValibotFormTuple<T extends v.BaseSchema<any, any, any>> = readonly [FormCon
  * Equivalent of validateForm, createHandleSubmit and mountValidationSignal combined
  *
  * @example
- * const [form, submit] = sf.asValibotForm(sf.createForm(), Schema, onSubmit);
+ * const [form, submit] = sf.useValibotForm(sf.createForm(), Schema, onSubmit);
  *
  * // Same as
  *
@@ -53,7 +53,7 @@ type ValibotFormTuple<T extends v.BaseSchema<any, any, any>> = readonly [FormCon
  * sf.mountValidationSignal(form, validate);
  * const submit = sf.createHandleSubmit(form, () => onSubmit(validate()));
  */
-export function asValibotForm<T extends v.BaseSchema<any, any, any>>(
+export function useValibotForm<T extends v.BaseSchema<any, any, any>>(
 	form: FormController<v.InferInput<T>>,
 	schema: T,
 	onSubmit: (values: v.InferOutput<T>) => void,
@@ -64,3 +64,5 @@ export function asValibotForm<T extends v.BaseSchema<any, any, any>>(
 
 	return [form, submit];
 }
+
+export { useValibotForm as asValibotForm };
