@@ -72,9 +72,8 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 	const [errors, setErrors] = createSignal<string[]>();
 
 	const validateField = (isolated?: boolean) => {
-		const submitted = access(options.submitted);
 		const validate = options.validate;
-		if (!submitted || !validate) return false;
+		if (!validate) return true;
 		if (!isolated && willThrow(self.validateSignal)) return false;
 		if (validate.empty)
 			try { return validate(); }
@@ -89,7 +88,7 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 		fresh: true,
 		onChange(value: any) {
 			options.setValue(value);
-			validateField();
+			if (access(options.submitted)) validateField();
 		},
 		name:     options.name,
 		validate: validateField,
