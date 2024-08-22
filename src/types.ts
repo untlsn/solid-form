@@ -60,7 +60,7 @@ export type FieldCore<T, K extends string | undefined = string> = {
 	getRef:   () => HTMLElement | undefined
 
 	setErrors:       Setter<string[] | undefined>
-	validate:        () => boolean,
+	validate:        (isolated?: boolean) => boolean,
 	validateSignal?: () => void,
 };
 /**

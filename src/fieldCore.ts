@@ -71,10 +71,11 @@ export function createFieldCore<T, K extends string | undefined = string>(option
 	const [ref, setRef] = createSignal<HTMLElement>();
 	const [errors, setErrors] = createSignal<string[]>();
 
-	const validateField = () => {
+	const validateField = (isolated?: boolean) => {
 		const submitted = access(options.submitted);
 		const validate = options.validate;
-		if (!submitted || willThrow(self.validateSignal) || !validate) return false;
+		if (!submitted || !validate) return false;
+		if (!isolated && willThrow(self.validateSignal)) return false;
 		if (validate.empty)
 			try { return validate(); }
 			catch { return false; }
